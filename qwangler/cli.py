@@ -7,6 +7,8 @@ from typing import Any, ClassVar
 
 import textual.widgets
 from platformdirs import PlatformDirs
+from playsound3 import playsound
+from playsound3.playsound3 import Sound
 from rich.text import Text
 from textual import on
 from textual.app import App, ComposeResult
@@ -225,6 +227,8 @@ class PlaylistApp(App[None]):
         self.playlists_path: Path = Path(config["playlist_path"]).expanduser().resolve()
         self.current_playlist_path: Path | None = None
         self.playlist_tracks: set[Path] = set()
+        self._current_track: Path | None = None
+        self._current_sound: Sound | None = None
 
     def track_is_in_playlist(self, path: Path) -> bool:
         return path.resolve() in self.playlist_tracks
@@ -243,6 +247,32 @@ class PlaylistApp(App[None]):
         # Textual caches rendered tree lines separately from folder statuses.
         browser._clear_line_cache()
         browser.refresh()
+
+    #
+    # Playback control
+    #
+    def stop_current_track(self) -> None:
+        """Stop and reset current playback."""
+        self._current_track = None
+        if self._current_sound is not None:
+            self._current_sound.stop()
+            self._current_sound = None
+
+    def start_playing(self, path: Path) -> None:
+        """Start playing the given audio file without blocking the UI."""
+        resolved = path.expanduser().resolve()
+        if not resolved.is_file():
+            return
+        if resolved == self._current_track and self._current_sound is not None and self._current_sound.is_alive():
+            return
+
+        self.stop_current_track()
+
+        try:
+            self._current_sound = playsound(str(resolved), block=False)
+            self._current_track = resolved
+        except Exception as e:
+            self.notify(f"Error playing {resolved.name}: {e}", severity="error")
 
     def compose(self) -> ComposeResult:
         yield textual.widgets.Header()
@@ -272,9 +302,31 @@ class PlaylistApp(App[None]):
     def file_selected(self, event: textual.widgets.DirectoryTree.FileSelected) -> None:
         path = Path(event.path)
         if path.suffix.lower() in config["audio_suffixes"]:
+            # Start playing the audio file immediately when selected
+            self.start_playing(path)
             self.add_track(path)
         elif path.suffix.lower() in config["playlist_suffixes"]:
+            self.stop_current_track()
             self.load_playlist(path)
+        else:
+            self.stop_current_track()
+
+    @on(textual.widgets.Tree.NodeHighlighted, "#browser")
+    def file_focused(self, event: textual.widgets.Tree.NodeHighlighted) -> None:
+        """
+        Handle keyboard/mouse highlighting of a file.
+        If it's an audio file, stop the current track and start this one.
+        Otherwise, stop playback if something is playing.
+        """
+        if event.node.data is None:
+            return
+
+        path = Path(event.node.data.path)
+        if path.suffix.lower() in config["audio_suffixes"]:
+            self.start_playing(path)
+        elif self._current_track:
+            # Highlighting a non-audio file stops playback
+            self.stop_current_track()
 
     def action_activate(self) -> None:
         focused = self.focused

@@ -12,6 +12,7 @@ dependencies = [
     "rich",
     "textual",
     "platformdirs>=4.3",
+    "playsound3>=3.3.2",
 ]
 
 [project.scripts]
