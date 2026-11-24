@@ -90,7 +90,7 @@ If the config file does not exist, Qwangler uses built-in defaults. If it exists
 | --- | --- | --- | --- |
 | `music_path` | string (path) | Your user music directory (from `platformdirs`) | Root directory of your music library. Supports `~` expansion. |
 | `playlist_path` | string (path) | `<music_path>/playlists` | Directory used for playlists. Supports `~` expansion. |
-| `audio_suffixes` | array of strings | `[".mp3", ".flac"]` | File extensions treated as audio files. Include the leading dot and use lowercase extensions (e.g. `".mp3"`). |
+| `audio_suffixes` | array of strings | `[".mp3", ".flac", ".ogg", ".m4a"]` | File extensions treated as audio files. Include the leading dot and use lowercase extensions (e.g. `".mp3"`). |
 | `playlist_suffixes` | array of strings | `[".m3u", ".m3u8"]` | File extensions treated as playlist files. Include the leading dot and use lowercase extensions. When saving, if the chosen filename extension is not in this list, Qwangler uses `.m3u`. |
 
 ### Example `config.toml`
