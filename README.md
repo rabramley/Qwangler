@@ -57,19 +57,19 @@ ruff format --check .
 Qwangler reads an optional TOML config file at:
 
 ```text
-<user-config-dir>/redrum/config.toml
+<user-config-dir>/qwangler/config.toml
 ```
 
-The config directory is determined by [`platformdirs`](https://pypi.org/project/platformdirs/) using the app name `redrum` and author `lbrc`. For example, on Linux this is typically:
+The config directory is determined by [`platformdirs`](https://pypi.org/project/platformdirs/) using the app name `qwangler` and author `lbrc`. For example, on Linux this is typically:
 
 ```text
-~/.config/redrum/config.toml
+~/.config/qwangler/config.toml
 ```
 
 To print the exact path on your system:
 
 ```bash
-uv run python -c "from platformdirs import PlatformDirs; print(PlatformDirs('redrum', 'lbrc').user_config_dir)"
+uv run python -c "from platformdirs import PlatformDirs; print(PlatformDirs('qwangler', 'lbrc').user_config_dir)"
 ```
 
 If the config file does not exist, Qwangler uses built-in defaults. If it exists, values in the file override the defaults; any settings you omit keep their default values.
@@ -79,7 +79,7 @@ If the config file does not exist, Qwangler uses built-in defaults. If it exists
 1. Create the config directory if needed (example for Linux):
 
    ```bash
-   mkdir -p ~/.config/redrum
+   mkdir -p ~/.config/qwangler
    ```
 
 2. Create `config.toml` in that directory and add any settings you want to override.
@@ -112,7 +112,5 @@ playlist_suffixes = [".m3u", ".m3u8"]
 3. Write tests first, then implement
 4. Run `ruff check . && ruff format .` to ensure style compliance
 5. Submit a PR
-
-#
 
 ---

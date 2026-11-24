@@ -16,12 +16,12 @@ from textual.binding import Binding
 from textual.containers import Horizontal, Vertical
 from textual.screen import ModalScreen
 
-platform_dirs = PlatformDirs("redrum", "lbrc")
+platform_dirs = PlatformDirs("qwangler", "lbrc")
 
 DEFAULT_CONFIG: dict[str, Any] = {
     "music_path": platform_dirs.user_music_dir,
     "playlist_path": Path(platform_dirs.user_music_dir) / "playlists",
-    "audio_suffixes": {".mp3", ".flac"},
+    "audio_suffixes": {".mp3", ".flac", ".ogg", ".m4a"},
     "playlist_suffixes": {".m3u", ".m3u8"},
 }
 
